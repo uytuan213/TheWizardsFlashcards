@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Flashcards</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="settings">Settings</string>
+    <string name="alarm">Alarm</string>
+
+
+    <!-- Preference Titles -->
+    <string name="appearance_header">Appearance</string>
+
+    <!-- Sync Preferences -->
+    <string name="darkTheme_title">Dark theme</string>
+    <string name="fontSize_title">Font size</string>
+    <string name="fontSize_summary">Set your font size</string>
 </resources>
