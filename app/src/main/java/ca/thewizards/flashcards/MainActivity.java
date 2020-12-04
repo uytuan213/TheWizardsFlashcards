@@ -85,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.alarm:
-                //TODO start alarm activity
+                Intent alarmIntent = new Intent(getApplicationContext(), AlarmActivity.class);
+                alarmIntent.putExtra("darkTheme", darkTheme);
+                startActivity(alarmIntent);
                 break;
             default:
                 ret = super.onOptionsItemSelected(item);

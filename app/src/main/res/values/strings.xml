@@ -4,6 +4,17 @@
     <string name="settings">Settings</string>
     <string name="alarm">Alarm</string>
 
+    <!-- Alarm -->
+    <string name="title_alarm_activity">Alarm</string>
+    <string name="alarm_button_text">SET ALARM</string>
+    <string name="alarm_date_hint">Choose a date</string>
+    <string name="alarm_time_hint">Choose a time</string>
+    <string name="date_format">yyyy-MM-dd</string>
+    <string name="time_format">HH:mm</string>
+    <string name="date_time_format">yyyy-MM-dd HH:mm</string>
+    <string name="date_empty">The date is required</string>
+    <string name="time_empty">The time is required</string>
+    <string name="date_is_before">The date cannot be before the current time</string>
 
     <!-- Preference Titles -->
     <string name="appearance_header">Appearance</string>
