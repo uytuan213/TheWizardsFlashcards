@@ -12,7 +12,10 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import ca.thewizards.flashcards.Model.Collection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean darkTheme = false;
     private int fontSize;
     private boolean isCreating = false;
-    private List<Button> buttonList;
+    private ArrayList<Button> buttonList;
 
     private LinearLayout mainLayout;
 
@@ -40,18 +43,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FlashcardsApplication application = ((FlashcardsApplication)getApplication());
+        //Add collections for testing
+        /*application.addCollection("Business Intelligence");
+        application.addCollection("MS Web Application");
+        application.addCollection("Oracle Database");*/
+
         // Generate collection buttons from database
-        // TODO
-        /*int countCollection = [get collection count from db]
-        buttonList = new Button[countCollection];
-        */
+        List<Collection> colList = application.getCollections();
+        buttonList = new ArrayList<Button>();
+
         mainLayout = (LinearLayout)findViewById(R.id.main_layout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 200);
         params.setMargins(40,5,40,5);
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < colList.size(); i++) {
+            Collection col = colList.get(i);
             Button btn = new Button(this);
-            btn.setText("Button #" + i);
-            btn.setId(i);
+            btn.setText(col.getName());
+            btn.setId(col.getId());
             // TODO Add btn to buttonList
             mainLayout.addView(btn, params);
         }

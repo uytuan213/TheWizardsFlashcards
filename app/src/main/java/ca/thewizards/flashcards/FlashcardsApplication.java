@@ -4,11 +4,17 @@ import android.app.Application;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import ca.thewizards.flashcards.Model.Collection;
 import ca.thewizards.flashcards.Model.Question;
 
 public class FlashcardsApplication extends Application {
-    private static final String DB_NAME = "db_tax_stats";
+    private static final String DB_NAME = "db_flashcards";
     private static final int DB_VERSION = 1;
     private static final String TABLE_NAME_COLLECTIONS = "tbl_collections";
     private static final String TABLE_NAME_QUESTIONS = "tbl_questions";
@@ -20,7 +26,14 @@ public class FlashcardsApplication extends Application {
             @Override
             public void onCreate(SQLiteDatabase sqLiteDatabase) {
                 sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME_COLLECTIONS + "(" +
-                        "cost_paid REAL, tax_paid REAL)");
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "name TEXT NOT NULL)");
+
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME_QUESTIONS + "(" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        " answer TEXT NOT NULL," +
+                        " question TEXT NOT NULL," +
+                        " collectionId INTEGER )");
             }
 
             @Override
@@ -46,17 +59,43 @@ public class FlashcardsApplication extends Application {
         return(collection);
     }
 
-    public void addCollection(String name) {
-        SQLiteDatabase db = helper.getWritableDatabase();
+    public ArrayList<Collection> getCollections(){
+        ArrayList<Collection> list = new ArrayList<Collection>();
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME_COLLECTIONS, null);
 
-        db.execSQL("INSERT INTO " + TABLE_NAME_COLLECTIONS + "(name) "
-                + "VALUES (" + name + ")");
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0){
+            do {
+                int colId = cursor.getInt(0);
+                String colName = cursor.getString(1);
+                Collection col = new Collection(colId, colName);
+                list.add(col);
+            }
+            while(cursor.moveToNext());
+        }
+
+        cursor.close();
+        return list;
+    }
+
+    public void addCollection(String name) {
+        try{
+            SQLiteDatabase db = helper.getWritableDatabase();
+
+            db.execSQL("INSERT INTO " + TABLE_NAME_COLLECTIONS + "(name) "
+                    + "VALUES ('" + name + "')");
+        }
+        catch(Exception e){
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+        }
+
     }
 
     public void renameCollection(int id, String name) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL("UPDATE " + TABLE_NAME_COLLECTIONS + " SET name = " + name + " WHERE id = " + id + ")");
+        db.execSQL("UPDATE " + TABLE_NAME_COLLECTIONS + " SET name = '" + name + "' WHERE id = " + id + ")");
     }
 
     public void deleteCollection(int id) {
@@ -73,7 +112,7 @@ public class FlashcardsApplication extends Application {
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.execSQL("INSERT INTO " + TABLE_NAME_QUESTIONS + "(answer, question, collectionId) "
-                + "VALUES (" + answer + ", " + question + ", " + collectionId + ")");
+                + "VALUES ('" + answer + "', '" + question + "', " + collectionId + ")");
     }
 
     public void deleteQuestion(int id) {
