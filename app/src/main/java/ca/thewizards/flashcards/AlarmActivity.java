@@ -33,6 +33,8 @@ public class AlarmActivity extends AppCompatActivity {
     EditText txtTime;
     Button btnSetAlarm;
 
+    String dateTimeAlarmStr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
@@ -85,19 +87,35 @@ public class AlarmActivity extends AppCompatActivity {
 
                 if(errorMsg.matches(""))
                 {
-                    String dateTimeAlarmStr = dateStr + " " + timeStr;
+                    dateTimeAlarmStr = dateStr + " " + timeStr;
 
                     Toast.makeText(AlarmActivity.this,
-                            "Alarm has been set to " + dateTimeAlarmStr,
-                            Toast.LENGTH_SHORT).show();
-                    /*
-                    long alarmInterval = (dateTimeAlarm.getTime() - dateTimeSet.getTime()); // milliseconds
-                    String secondsStr = Long.toString(alarmInterval);
-                    txtDateTime.setText(secondsStr);
-                     */
+                            "Alarm has been set to " + dateTimeAlarmStr, Toast.LENGTH_SHORT).show();
 
-                    //Intent alarmIntent = new Intent(AlarmActivity.this, AlarmService.class);
-                    //alarmIntent.putExtra("DateTimeAlarm", dateTimeAlarmStr);
+                    try {
+                        DateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_time_format));
+
+                        // get the date time of alarm
+                        Date dateTimeAlarm = dateFormat.parse(dateTimeAlarmStr);
+
+                        // get the date time of current (turning off the app)
+                        String dateTimeCurrentStr = dateFormat.format(new Date());
+                        Date dateTimeCurrent = dateFormat.parse(dateTimeCurrentStr);
+
+                        int alarm_delay = (int)(dateTimeAlarm.getTime() - dateTimeCurrent.getTime()); // milliseconds
+
+                        // Test
+                        //alarm_delay = 10000;
+                        //Toast.makeText(AlarmActivity.this,"Alarm after " + alarm_delay, Toast.LENGTH_SHORT).show();
+
+                        Intent alarmIntent = new Intent(AlarmActivity.this, NotificationService.class);
+                        alarmIntent.putExtra("DateTimeAlarm", alarm_delay);
+
+                        startService(alarmIntent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 else
                 {
