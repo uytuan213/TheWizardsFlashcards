@@ -20,11 +20,11 @@ import ca.thewizards.flashcards.Model.Collection;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
-    private boolean darkTheme = false;
-    private int fontSize;
+    private boolean darkTheme;
+    private boolean animation;
     private boolean isCreating = false;
     private ArrayList<Button> buttonList;
-
+    FlashcardsApplication application;
     private LinearLayout mainLayout;
 
     @Override
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         darkTheme = sharedPref.getBoolean("darkTheme", false);
-        fontSize = sharedPref.getInt("fontSize", 24);
+        animation = sharedPref.getBoolean("animation", false);
 
         if (darkTheme)
         {
@@ -43,17 +43,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FlashcardsApplication application = ((FlashcardsApplication)getApplication());
-        //Add collections for testing
-        /*application.addCollection("Business Intelligence");
-        application.addCollection("MS Web Application");
-        application.addCollection("Oracle Database");*/
-
-        // Generate collection buttons from database
-        List<Collection> colList = application.getCollections();
         buttonList = new ArrayList<Button>();
-
         mainLayout = (LinearLayout)findViewById(R.id.main_layout);
+        application = ((FlashcardsApplication)getApplication());
+    }
+
+    void loadCollections(){
+        mainLayout.removeAllViews();
+        buttonList.clear();
+        List<Collection> colList = application.getCollections();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 200);
         params.setMargins(40,5,40,5);
         for (int i = 0; i < colList.size(); i++) {
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText(col.getName());
             btn.setId(col.getId());
-            // TODO Add btn to buttonList
+            buttonList.add(btn);
             mainLayout.addView(btn, params);
         }
     }
@@ -75,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             finish();
             startActivity(getIntent());
         }
+
+        // Generate collection buttons from database
+        loadCollections();
     }
 
     @Override
@@ -97,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 Intent alarmIntent = new Intent(getApplicationContext(), AlarmActivity.class);
                 alarmIntent.putExtra("darkTheme", darkTheme);
                 startActivity(alarmIntent);
+                break;
+            case R.id.manage_collections:
+                Intent manageCollectionIntent = new Intent(getApplicationContext(), ManageCollectionsActivity.class);
+                manageCollectionIntent.putExtra("darkTheme", darkTheme);
+                startActivity(manageCollectionIntent);
                 break;
             default:
                 ret = super.onOptionsItemSelected(item);

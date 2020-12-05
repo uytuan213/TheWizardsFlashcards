@@ -6,14 +6,10 @@
         <SwitchPreferenceCompat
             app:key="darkTheme"
             app:title="@string/darkTheme_title" />
-
-        <SeekBarPreference
-            app:key="fontSize"
-            app:title="Font Size"
-            app:summary="@string/fontSize_summary"
-            app:showSeekBarValue="true"
-            app:min="20"
-            android:max="40"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="animation"
+            android:title="Animation" />
 
     </PreferenceCategory>
 
