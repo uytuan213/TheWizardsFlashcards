@@ -22,6 +22,11 @@
     <string name="collection_added">Collection added!</string>
     <string name="back">Back</string>
 
+    <!-- Play Activity -->
+    <string name="play_answer">Answer</string>
+    <string name="play_OK">OK</string>
+
+
     <!-- Preference Titles -->
     <string name="appearance_header">Appearance</string>
 

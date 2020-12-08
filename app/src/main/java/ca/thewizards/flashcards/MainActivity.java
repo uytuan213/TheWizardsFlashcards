@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -46,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
         buttonList = new ArrayList<Button>();
         mainLayout = (LinearLayout)findViewById(R.id.main_layout);
         application = ((FlashcardsApplication)getApplication());
+
+        // Add questions for testing
+        /*application.addQuestion("This is the second answer", "This is the second question", 1);
+        application.addQuestion("This is the third answer", "This is the third question", 1);
+        application.addQuestion("This is the fourth answer", "This is the fourth question", 1);*/
     }
 
     void loadCollections(){
@@ -59,9 +65,23 @@ public class MainActivity extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText(col.getName());
             btn.setId(col.getId());
+            btn.setOnClickListener(handleCollectionClick());
             buttonList.add(btn);
             mainLayout.addView(btn, params);
         }
+    }
+
+    View.OnClickListener handleCollectionClick(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent playIntent = new Intent(getApplicationContext(), PlayActivity.class);
+                playIntent.putExtra("darkTheme", darkTheme);
+                playIntent.putExtra("animation", animation);
+                playIntent.putExtra("collectionId", v.getId());
+                startActivity(playIntent);
+            }
+        };
     }
 
     @Override
