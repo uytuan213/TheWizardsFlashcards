@@ -1,20 +1,22 @@
 package ca.thewizards.flashcards;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import ca.thewizards.flashcards.Model.Question;
 
@@ -23,12 +25,18 @@ public class PlayActivity extends AppCompatActivity {
     private FlashcardsApplication application;
     private List<Question> questions;
     private TextInputEditText txt_answer;
+
+    private ImageView imageViewFace;
     private Button btn_ok;
+
     private boolean animation;
     private int collectionId;
     private int curQuestion = 0;
     private CardView cardView;
     private TextView txt_question;
+
+    private int totalQuestion;
+    private int totalCorrect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +61,34 @@ public class PlayActivity extends AppCompatActivity {
         application = (FlashcardsApplication)getApplication();
         questions = application.getQuestions(collectionId);
 
-        if (questions.size() > 0){
+        // Test
+        Question q1 = new Question(1, "red", "What color is apple?", 1);
+        Question q2 = new Question(2, "yellow", "What color is banana?", 1);
+        questions.add(q1);
+        questions.add(q2);
+
+        totalQuestion = questions.size();
+
+        if (totalQuestion > 0){
             txt_answer = findViewById(R.id.txt_answer);
             txt_question = findViewById(R.id.txt_question);
+
+            imageViewFace = findViewById(R.id.image_Face);
             btn_ok = findViewById(R.id.btn_ok);
             cardView = findViewById(R.id.question_card_view);
 
             btn_ok.setOnClickListener(handleClick());
             txt_question.setText(questions.get(curQuestion).getQuestion());
         }
-
-
     }
 
     View.OnClickListener handleClick(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(PlayActivity.this, "button clicked", Toast.LENGTH_SHORT).show();
+
+                // Animation effect
                 if (animation){
                     cardView.animate().withLayer()
                             .rotationY(90)
@@ -93,6 +112,25 @@ public class PlayActivity extends AppCompatActivity {
                     txt_question.setText(questions.get(curQuestion).getAnswer());
                 }
 
+                // happy face and sad face
+                String answerInput = txt_answer.getText().toString().toLowerCase();
+
+                // TODO: check correct answer from database
+                String answerCorrect = "right".toLowerCase(); // test
+
+                Toast.makeText(PlayActivity.this, answerInput + "=" + answerCorrect, Toast.LENGTH_SHORT).show();
+
+                if(answerCorrect.equals(answerInput)){
+                    imageViewFace.setImageResource(R.drawable.ic_happy_face);
+                }
+                else{
+                    imageViewFace.setImageResource(R.drawable.ic_sad_face);
+                }
+
+
+                // display the result
+
+                // skip to next question
             }
         };
     }

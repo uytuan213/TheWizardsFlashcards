@@ -51,6 +51,11 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/image_Face"
+                    android:layout_width="match_parent"
+                    android:layout_height="125dip"
+                    tools:srcCompat="@color/colorWhite" />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
