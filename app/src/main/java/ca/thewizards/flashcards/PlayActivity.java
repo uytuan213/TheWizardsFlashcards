@@ -42,7 +42,7 @@ public class PlayActivity extends AppCompatActivity {
     private int totalQuestion;
     private int totalCorrect;
 
-    private boolean isCreating = false;
+    private boolean isCreating;
     private SharedPreferences sharedPref;
 
     @Override
@@ -200,7 +200,7 @@ public class PlayActivity extends AppCompatActivity {
         return ret;
     }
 
-    @Override
+    /*@Override
     protected void onPause() {
         SharedPreferences.Editor ed = sharedPref.edit();
         ed.putInt("questionIndex", questionIndex);
@@ -225,5 +225,5 @@ public class PlayActivity extends AppCompatActivity {
             displayQuestion(txt_question, questionIndex);
             view_Result.setText("Result: " + totalCorrect + "/" + totalQuestion);
         }
-    }
+    }*/
 }
