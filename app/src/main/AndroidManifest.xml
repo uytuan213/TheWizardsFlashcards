@@ -10,7 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/SplashScreenTheme">
-        <activity android:name=".PlayActivity"></activity>
+        <activity
+            android:name=".PlayActivity"
+            android:configChanges="orientation|screenSize"
+        />
         <activity android:name=".ManageCollectionsActivity" />
         <activity
             android:name=".AlarmActivity"

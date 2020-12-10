@@ -71,7 +71,8 @@
                     android:id="@+id/txt_answer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/play_answer" />
+                    android:hint="@string/play_answer"
+                    android:inputType="text" />
 
                 <Button
                     android:id="@+id/btn_ok"

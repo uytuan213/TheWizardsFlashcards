@@ -1,6 +1,7 @@
 package ca.thewizards.flashcards;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 
 import ca.thewizards.flashcards.Model.Question;
 
@@ -40,6 +42,9 @@ public class PlayActivity extends AppCompatActivity {
     private int totalQuestion;
     private int totalCorrect;
 
+    private boolean isCreating = false;
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
@@ -59,6 +64,9 @@ public class PlayActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        isCreating = true;
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         application = (FlashcardsApplication)getApplication();
         questions = application.getQuestions(collectionId);
@@ -94,6 +102,7 @@ public class PlayActivity extends AppCompatActivity {
     private void displayQuestion(TextView txt, int questionIndex){
         int questionNo = questionIndex + 1;
         txt.setText("Q" + questionNo + ": " + questions.get(questionIndex).getQuestion());
+        txt_question.requestFocus();
     }
 
     View.OnClickListener handleClick(){
@@ -145,8 +154,14 @@ public class PlayActivity extends AppCompatActivity {
                     view_Result.setText("Result: " + totalCorrect + "/" + totalQuestion);
 
                     // show btn_next
-                    if(totalQuestion != (questionIndex + 1)){
+                    if(totalQuestion > (questionIndex + 1)){
                         btn_next.setVisibility(View.VISIBLE);
+                        txt_answer.setEnabled(false);
+                        btn_ok.setEnabled(false);
+                    }
+                    else{
+                        btn_ok.setText(R.string.play_back_to_home);
+                        btn_ok.setOnClickListener(handleClickWhenDone());
                     }
                     questionIndex++;
 
@@ -154,9 +169,20 @@ public class PlayActivity extends AppCompatActivity {
                 case R.id.btn_next:
                     txt_answer.setText("");
                     btn_next.setVisibility(View.INVISIBLE);
+                    btn_ok.setEnabled(true);
+                    txt_answer.setEnabled(true);
                     displayQuestion(txt_question, questionIndex);
                     break;
             }
+            }
+        };
+    }
+
+    public View.OnClickListener handleClickWhenDone(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         };
     }
@@ -172,5 +198,32 @@ public class PlayActivity extends AppCompatActivity {
                 ret = super.onOptionsItemSelected(item);
         }
         return ret;
+    }
+
+    @Override
+    protected void onPause() {
+        SharedPreferences.Editor ed = sharedPref.edit();
+        ed.putInt("questionIndex", questionIndex);
+        ed.putInt("collectionId", collectionId);
+        ed.putInt("score", totalCorrect);
+        ed.putInt("totalQuestion", totalQuestion);
+        ed.commit();
+
+        isCreating = false;
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isCreating){
+            collectionId = sharedPref.getInt("collectionId", 0);
+            questionIndex = sharedPref.getInt("questionIndex", 0);
+            totalCorrect = sharedPref.getInt("score", 0);
+            totalQuestion = sharedPref.getInt("totalQuestion", 0);
+            displayQuestion(txt_question, questionIndex);
+            view_Result.setText("Result: " + totalCorrect + "/" + totalQuestion);
+        }
     }
 }
