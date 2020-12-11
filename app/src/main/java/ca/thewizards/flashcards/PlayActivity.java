@@ -2,6 +2,7 @@ package ca.thewizards.flashcards;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,8 +43,9 @@ public class PlayActivity extends AppCompatActivity {
     private int totalQuestion;
     private int totalCorrect;
 
-    private boolean isCreating;
     private SharedPreferences sharedPref;
+    private int faceFlag;   // 0: happy; 1: sad; -1: none
+    private boolean nextBtnFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,6 @@ public class PlayActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        isCreating = true;
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -99,19 +100,13 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-    private void displayQuestion(TextView txt, int questionIndex){
-        int questionNo = questionIndex + 1;
-        txt.setText("Q" + questionNo + ": " + questions.get(questionIndex).getQuestion());
-        txt_question.requestFocus();
-    }
-
     View.OnClickListener handleClick(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             switch (v.getId()){
                 case R.id.btn_ok:
-                    // Animation effect
+                    // Animation effect and display correct answers
                     if (animation){
                         cardView.animate().withLayer()
                             .rotationY(90)
@@ -119,8 +114,8 @@ public class PlayActivity extends AppCompatActivity {
                             .withEndAction(
                                 new Runnable() {
                                     @Override public void run() {
-                                    txt_question.setText("Q" + (questionIndex + 1) + ": " +
-                                            questions.get(questionIndex).getAnswer());
+                                        txt_question.setText("Q" + (questionIndex + 1) + ": " +
+                                                questions.get(questionIndex).getAnswer());
 
                                     // second quarter turn
                                     cardView.setRotationY(-90);
@@ -143,30 +138,35 @@ public class PlayActivity extends AppCompatActivity {
 
                     if(answerCorrect.equals(answerInput)){
                         image_Face.setImageResource(R.drawable.ic_happy_face);
-
+                        faceFlag = 0;
                         totalCorrect++;
                     }
                     else{
                         image_Face.setImageResource(R.drawable.ic_sad_face);
+                        faceFlag = 1;
                     }
 
-                    // display the result
-                    view_Result.setText("Result: " + totalCorrect + "/" + totalQuestion);
+                    // display the score
+                    view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
+
 
                     // show btn_next
                     if(totalQuestion > (questionIndex + 1)){
-                        btn_next.setVisibility(View.VISIBLE);
-                        txt_answer.setEnabled(false);
-                        btn_ok.setEnabled(false);
+                        managerNextButton();
+                        //btn_next.setVisibility(View.VISIBLE);
+                        //txt_answer.setEnabled(false);
+                        //btn_ok.setEnabled(false);
+                        nextBtnFlag = true;
                     }
                     else{
                         btn_ok.setText(R.string.play_back_to_home);
                         btn_ok.setOnClickListener(handleClickWhenDone());
                     }
-                    questionIndex++;
 
                     break;
                 case R.id.btn_next:
+                    nextBtnFlag = false;
+                    questionIndex++;
                     txt_answer.setText("");
                     btn_next.setVisibility(View.INVISIBLE);
                     btn_ok.setEnabled(true);
@@ -176,6 +176,12 @@ public class PlayActivity extends AppCompatActivity {
             }
             }
         };
+    }
+
+    private void managerNextButton(){
+            btn_next.setVisibility(View.VISIBLE);
+            txt_answer.setEnabled(false);
+            btn_ok.setEnabled(false);
     }
 
     public View.OnClickListener handleClickWhenDone(){
@@ -198,6 +204,72 @@ public class PlayActivity extends AppCompatActivity {
                 ret = super.onOptionsItemSelected(item);
         }
         return ret;
+    }
+
+    @Override
+    protected void onPause() {
+        Editor editor = sharedPref.edit();
+        editor.putInt("questionIndex", questionIndex);
+        editor.putBoolean("nextButton", nextBtnFlag);
+
+        editor.putString("questionText", txt_question.getText().toString());
+
+        editor.putInt("faceFlag", faceFlag);
+        editor.putString("userAnswer", txt_answer.getText().toString());
+        editor.putInt("score", totalCorrect);
+
+        editor.commit();
+
+        Toast.makeText(this, "onPause called", Toast.LENGTH_SHORT).show();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        questionIndex = sharedPref.getInt("questionIndex", 0);
+
+        nextBtnFlag = sharedPref.getBoolean("nextButton", false);
+        if(nextBtnFlag){
+            managerNextButton();
+        }
+
+        //displayQuestion(txt_question, questionIndex);
+        txt_question.setText(sharedPref.getString("questionText",
+                "Q" + (questionIndex + 1) + ": " + questions.get(questionIndex).getQuestion()));
+
+        faceFlag = sharedPref.getInt("faceFlag", -1);
+        //if(faceFlag != -1){
+            reassignFace(faceFlag);
+        //}
+
+        txt_answer.setText(sharedPref.getString("userAnswer", ""));
+
+        totalCorrect = sharedPref.getInt("score", 0);
+        view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
+
+        Toast.makeText(this, "onResume called, questionIndex: " + questionIndex, Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void displayQuestion(TextView txt, int qIndex){
+        int questionNo = qIndex + 1;
+        txt.setText("Q" + questionNo + ": " + questions.get(qIndex).getQuestion());
+        txt_question.requestFocus();
+    }
+
+    private void reassignFace(int flag)
+    {
+        switch (flag)
+        {
+            case 0:
+                image_Face.setImageResource(R.drawable.ic_happy_face);
+                break;
+            case 1:
+                image_Face.setImageResource(R.drawable.ic_sad_face);
+                break;
+        }
     }
 
     /*@Override
@@ -223,7 +295,7 @@ public class PlayActivity extends AppCompatActivity {
             totalCorrect = sharedPref.getInt("score", 0);
             totalQuestion = sharedPref.getInt("totalQuestion", 0);
             displayQuestion(txt_question, questionIndex);
-            view_Result.setText("Result: " + totalCorrect + "/" + totalQuestion);
+            view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
         }
     }*/
 }
