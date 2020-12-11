@@ -35,6 +35,7 @@ public class PlayActivity extends AppCompatActivity {
     private Button btn_ok;
     private TextView view_Result;
     private Button btn_next;
+    private Button btn_reset;
 
     private boolean animation;
     private boolean darkTheme;
@@ -89,11 +90,15 @@ public class PlayActivity extends AppCompatActivity {
             btn_ok = findViewById(R.id.btn_ok);
             cardView = findViewById(R.id.question_card_view);
             btn_next = findViewById(R.id.btn_next);
+            btn_reset = findViewById(R.id.btn_reset);
+
             view_Result = findViewById(R.id.view_result);
             view_Result.setText("Result: " + totalCorrect + "/" + totalQuestion);
 
             btn_ok.setOnClickListener(handleClick());
             btn_next.setOnClickListener(handleClick());
+            btn_reset.setOnClickListener(handleClick());
+
             if (darkTheme){
                 cardView.setCardBackgroundColor(Color.GRAY);
                 txt_answer.setTextColor(Color.WHITE);
@@ -157,6 +162,8 @@ public class PlayActivity extends AppCompatActivity {
                         view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
                     }
 
+                    Toast.makeText(PlayActivity.this, totalQuestion+":"+questionIndex, Toast.LENGTH_SHORT).show();
+
                     // show btn_next
                     if(totalQuestion != (questionIndex + 1)){
                         managerNextButton();
@@ -176,6 +183,9 @@ public class PlayActivity extends AppCompatActivity {
                     btn_ok.setEnabled(true);
                     txt_answer.setEnabled(true);
                     displayQuestion(txt_question, questionIndex);
+                    break;
+                case R.id.btn_reset:
+                    resetQuestions();
                     break;
             }
             }
@@ -236,10 +246,9 @@ public class PlayActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         int collectionIdMemory = sharedPref.getInt("collectionIdMemory", 0);
+        questionIndex = sharedPref.getInt("questionIndex", 0);
 
         if(collectionId == collectionIdMemory){
-            questionIndex = sharedPref.getInt("questionIndex", 0);
-
             nextBtnFlag = sharedPref.getBoolean("nextButton", false);
             if(nextBtnFlag){
                 managerNextButton();
@@ -282,30 +291,26 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-    /*@Override
-    protected void onPause() {
-        SharedPreferences.Editor ed = sharedPref.edit();
-        ed.putInt("questionIndex", questionIndex);
-        ed.putInt("collectionId", collectionId);
-        ed.putInt("score", totalCorrect);
-        ed.putInt("totalQuestion", totalQuestion);
-        ed.commit();
+    private void resetQuestions(){
+        questionIndex = 0;
+        displayQuestion(txt_question, questionIndex);
 
-        isCreating = false;
+        faceFlag = 0;
+        image_Face.setImageResource(R.color.colorWhite);
 
-        super.onPause();
+        txt_answer.setText("");
+
+        isPlayDone = false;
+        btn_ok.setText(getString(R.string.play_OK));
+
+        nextBtnFlag = false;
+        btn_next.setVisibility(View.INVISIBLE);
+        txt_answer.setEnabled(true);
+        btn_ok.setEnabled(true);
+
+        totalCorrect = 0;
+        view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
+
+        Toast.makeText(this, totalQuestion+":"+questionIndex, Toast.LENGTH_SHORT).show();
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!isCreating){
-            collectionId = sharedPref.getInt("collectionId", 0);
-            questionIndex = sharedPref.getInt("questionIndex", 0);
-            totalCorrect = sharedPref.getInt("score", 0);
-            totalQuestion = sharedPref.getInt("totalQuestion", 0);
-            displayQuestion(txt_question, questionIndex);
-            view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
-        }
-    }*/
 }

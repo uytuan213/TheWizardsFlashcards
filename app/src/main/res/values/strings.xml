@@ -46,6 +46,7 @@
     <string name="play_answer">Answer</string>
     <string name="play_OK">OK</string>
     <string name="play_next">Next</string>
+    <string name="play_reset">Reset</string>
     <string name="play_result">Result:</string>
     <string name="play_back_to_home">Back to home</string>
     <string name="play_no_question">No question in this collection!</string>
