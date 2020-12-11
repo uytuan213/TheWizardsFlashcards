@@ -73,12 +73,12 @@ public class PlayActivity extends AppCompatActivity {
         questions = application.getQuestions(collectionId);
 
         // Test; TODO: remove later
-        Question q1 = new Question(1, "Red", "What color is apple?", 1);
-        Question q2 = new Question(2, "Yellow", "What color is banana?", 1);
-        Question q3 = new Question(3, "Blue", "What color is sky?", 1);
-        questions.add(q1);
-        questions.add(q2);
-        questions.add(q3);
+//        Question q1 = new Question(1, "Red", "What color is apple?", 1);
+//        Question q2 = new Question(2, "Yellow", "What color is banana?", 1);
+//        Question q3 = new Question(3, "Blue", "What color is sky?", 1);
+//        questions.add(q1);
+//        questions.add(q2);
+//        questions.add(q3);
 
         totalQuestion = questions.size();
         totalCorrect = 0;

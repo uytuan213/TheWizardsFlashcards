@@ -9,5 +9,5 @@
         android:title="@string/alarm" />
     <item
         android:id="@+id/manage_collections"
-        android:title="Manage Collection" />
+        android:title="@string/manage_collections" />
 </menu>

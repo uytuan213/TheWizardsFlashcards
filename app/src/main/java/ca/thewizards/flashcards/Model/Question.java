@@ -1,52 +1,52 @@
 package ca.thewizards.flashcards.Model;
 
 public class Question {
-    private int id;
-    private String answer;
-    private String question;
-    private int collectionId;
+    private int modelId;
+    private String modelAnswer;
+    private String modelQuestion;
+    private int modelCollectionId;
 
     public Question() {
 
     }
 
-    public Question(int modelId, String modelAnswer, String modelQuestion, int modelCollectionId) {
-        id = modelId;
-        answer = modelAnswer;
-        question = modelQuestion;
-        collectionId = modelCollectionId;
+    public Question(int id, String answer, String question, int collectionId) {
+        modelId = id;
+        modelAnswer = answer;
+        modelQuestion = question;
+        modelCollectionId = collectionId;
     }
 
     public int getId() {
-        return id;
+        return modelId;
     }
 
-    public void setId(int modelId) {
-        id = modelId;
+    public void setId(int id) {
+        modelId = id;
     }
 
     public String getAnswer() {
-        return answer;
+        return modelAnswer;
     }
 
-    public void setAnswer(String modelAnswer) {
-        answer = modelAnswer;
+    public void setAnswer(String answer) {
+        modelAnswer = answer;
     }
 
     public String getQuestion() {
-        return question;
+        return modelQuestion;
     }
 
-    public void setQuestion(String modelQuestion) {
-        question = modelQuestion;
+    public void setQuestion(String question) {
+        modelQuestion = question;
     }
 
     public int getCollectionId() {
-        return collectionId;
+        return modelCollectionId;
     }
 
-    public void setCollectionId(int modelCollectionId) {
-        collectionId = modelCollectionId;
+    public void setCollectionId(int collectionId) {
+        modelCollectionId = collectionId;
     }
 
 }

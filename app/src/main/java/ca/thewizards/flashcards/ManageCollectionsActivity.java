@@ -3,7 +3,6 @@ package ca.thewizards.flashcards;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import ca.thewizards.flashcards.Model.Collection;
 
 public class ManageCollectionsActivity extends AppCompatActivity {
 
+    private boolean darkTheme;
     ArrayList<Collection> colList;
     LinearLayout linearLayout;
     LinearLayout addColLayout;
@@ -36,7 +36,9 @@ public class ManageCollectionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        if (intent.getBooleanExtra("darkTheme", false)){
+        darkTheme = intent.getBooleanExtra("darkTheme", false);
+
+        if (darkTheme){
             setTheme(R.style.AppThemeDark);
         } else {
             setTheme(R.style.AppTheme);
@@ -121,8 +123,21 @@ public class ManageCollectionsActivity extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText(col.getName());
             btn.setId(col.getId());
+            btn.setOnClickListener(handleCollectionClick());
             // TODO Add btn to buttonList
             linearLayout.addView(btn, params);
         }
+    }
+
+    View.OnClickListener handleCollectionClick(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent manageQuestionsIntent = new Intent(getApplicationContext(), ManageQuestionsActivity.class);
+                manageQuestionsIntent.putExtra("darkTheme", darkTheme);
+                manageQuestionsIntent.putExtra("collectionId", v.getId());
+                startActivity(manageQuestionsIntent);
+            }
+        };
     }
 }

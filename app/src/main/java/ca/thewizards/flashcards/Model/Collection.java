@@ -1,31 +1,31 @@
 package ca.thewizards.flashcards.Model;
 
 public class Collection {
-    private int id;
-    private String name;
+    private int modelId;
+    private String modelName;
 
     public Collection() {
 
     }
 
-    public Collection(int modelId, String modelName) {
-        id = modelId;
-        name = modelName;
+    public Collection(int id, String name) {
+        modelId = id;
+        modelName = name;
     }
 
     public int getId() {
-        return id;
+        return modelId;
     }
 
-    public void setId(int modelId) {
-        id = modelId;
+    public void setId(int id) {
+        modelId = id;
     }
 
     public String getName() {
-        return name;
+        return modelName;
     }
 
-    public void setName(String modelName) {
-        name = modelName;
+    public void setName(String name) {
+        modelName = name;
     }
 }

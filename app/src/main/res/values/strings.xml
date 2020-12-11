@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Flashcards</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Menu -->
     <string name="alarm">Alarm</string>
+    <string name="settings">Settings</string>
+    <string name="manage_collections">Manage Collections</string>
+    <string name="manage_questions">Manage Questions</string>
 
     <!-- Alarm -->
     <string name="title_alarm_activity">Alarm</string>
@@ -17,10 +21,22 @@
     <string name="date_is_before">The date cannot be before the current time</string>
     <string name="alarm_content">Hey, time to continue your study</string>
 
+    <!-- Manage Collections -->
+    <string name="title_activity_manage_collections">Manage Collections</string>
     <string name="collection_name">Collection name</string>
     <string name="add_collection">Add Collection</string>
     <string name="collection_added">Collection added!</string>
     <string name="back">Back</string>
+
+    <!-- Manage Questions -->
+    <string name="title_activity_manage_questions">Manage Questions</string>
+    <string name="question">Question</string>
+    <string name="question_answer">Answer</string>
+    <string name="add_question">Add Question</string>
+    <string name="question_added">Question added!</string>
+
+    <!-- Edit Question -->
+    <string name="title_activity_edit_question">Edit Question</string>
 
     <!-- Play Activity -->
     <string name="play_answer">Answer</string>

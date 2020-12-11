@@ -111,10 +111,15 @@ public class FlashcardsApplication extends Application {
     }
 
     public void addQuestion(String answer, String question, int collectionId) {
-        SQLiteDatabase db = helper.getWritableDatabase();
+        try{
+            SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL("INSERT INTO " + TABLE_NAME_QUESTIONS + "(answer, question, collectionId) "
-                + "VALUES ('" + answer + "', '" + question + "', " + collectionId + ")");
+            db.execSQL("INSERT INTO " + TABLE_NAME_QUESTIONS + "(answer, question, collectionId) "
+                    + "VALUES ('" + answer + "', '" + question + "', " + collectionId + ")");
+        }
+        catch(Exception e){
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+        }
     }
 
     public ArrayList<Question> getQuestions(int collectionId){
