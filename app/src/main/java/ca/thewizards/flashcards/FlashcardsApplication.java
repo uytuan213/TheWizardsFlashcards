@@ -97,29 +97,17 @@ public class FlashcardsApplication extends Application {
     public void renameCollection(int id, String name) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL("UPDATE " + TABLE_NAME_COLLECTIONS + " SET name = '" + name + "' WHERE id = " + id + ")");
+        db.execSQL("UPDATE " + TABLE_NAME_COLLECTIONS + " SET name = '" + name + "' WHERE id=" + id);
     }
 
     public void deleteCollection(int id) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
         // Delete the Collection
-        db.execSQL("DELETE FROM " + TABLE_NAME_COLLECTIONS + "WHERE id = " + id + ")");
+        db.execSQL("DELETE FROM " + TABLE_NAME_COLLECTIONS + " WHERE id=" + id);
 
         // Delete All the Questions in the Collection
-        db.execSQL("DELETE FROM " + TABLE_NAME_QUESTIONS + "WHERE collectionId = " + id + ")");
-    }
-
-    public void addQuestion(String answer, String question, int collectionId) {
-        try{
-            SQLiteDatabase db = helper.getWritableDatabase();
-
-            db.execSQL("INSERT INTO " + TABLE_NAME_QUESTIONS + "(answer, question, collectionId) "
-                    + "VALUES ('" + answer + "', '" + question + "', " + collectionId + ")");
-        }
-        catch(Exception e){
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
-        }
+        db.execSQL("DELETE FROM " + TABLE_NAME_QUESTIONS + " WHERE collectionId=" + id);
     }
 
     public ArrayList<Question> getQuestions(int collectionId){
@@ -149,9 +137,37 @@ public class FlashcardsApplication extends Application {
 
     }
 
-    public void deleteQuestion(int id) {
-        SQLiteDatabase db = helper.getWritableDatabase();
+    public void addQuestion(String answer, String question, int collectionId) {
+        try{
+            SQLiteDatabase db = helper.getWritableDatabase();
 
-        db.execSQL("DELETE FROM " + TABLE_NAME_QUESTIONS + "WHERE id = " + id + ")");
+            db.execSQL("INSERT INTO " + TABLE_NAME_QUESTIONS + "(answer, question, collectionId) "
+                    + "VALUES ('" + answer + "', '" + question + "', " + collectionId + ")");
+        }
+        catch(Exception e){
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+        }
+    }
+
+    public void updateQuestion(int id, String answer, String question) {
+        try{
+            SQLiteDatabase db = helper.getWritableDatabase();
+
+            db.execSQL("UPDATE " + TABLE_NAME_QUESTIONS + " SET answer = '" + answer + "', question = '" + question + "' WHERE id=" + id);
+        }
+        catch(Exception e){
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+        }
+    }
+
+    public void deleteQuestion(int id) {
+        try{
+            SQLiteDatabase db = helper.getWritableDatabase();
+
+            db.execSQL("DELETE FROM " + TABLE_NAME_QUESTIONS + " WHERE id=" + id);
+        }
+        catch(Exception e){
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+        }
     }
 }

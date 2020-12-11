@@ -24,13 +24,15 @@ public class ManageQuestionsActivity extends AppCompatActivity {
 
     private boolean darkTheme;
     int collectionId;
+    int editingId = -1;
     ArrayList<Question> quesList;
     LinearLayout linearLayout;
     LinearLayout addQuesLayout;
     ScrollView scrollView;
     FlashcardsApplication application;
     FloatingActionButton fab;
-    Button addQuestion;
+    Button saveQuestion;
+    Button deleteQuestion;
     Button backToQuestions;
     TextInputEditText txtQuestion;
     TextInputEditText txtQuestionAnswer;
@@ -49,6 +51,11 @@ public class ManageQuestionsActivity extends AppCompatActivity {
         // Load the selected collection id from intent
         collectionId = intent.getIntExtra("collectionId", 1);
 
+        application = (FlashcardsApplication)getApplication();
+
+        // Change activity title to the name of the collection
+        setTitle(application.getCollection(collectionId).getName());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_questions);
 
@@ -57,13 +64,12 @@ public class ManageQuestionsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        application = (FlashcardsApplication)getApplication();
-
         addQuesLayout = (LinearLayout)  findViewById(R.id.add_ques_linear_layout);
         linearLayout = (LinearLayout) findViewById(R.id.manage_ques_linear_layout);
         scrollView = findViewById(R.id.scroll_view);
         fab = findViewById(R.id.manage_ques_fab);
-        addQuestion = findViewById(R.id.btn_add);
+        saveQuestion = findViewById(R.id.btn_save_question);
+        deleteQuestion = findViewById(R.id.btn_delete_question);
         backToQuestions = findViewById(R.id.btn_back_to_questions);
         txtQuestion = findViewById(R.id.txt_question);
         txtQuestionAnswer = findViewById(R.id.txt_question_answer);
@@ -71,13 +77,10 @@ public class ManageQuestionsActivity extends AppCompatActivity {
         //Auto-generate question buttons
         LoadQuestions();
 
-        // Add fab listener
+        // Add event listeners
         fab.setOnClickListener(handleClick());
-
-        // Add addQuestion listener
-        addQuestion.setOnClickListener(handleClick());
-
-        //Add backToQuestions listener
+        saveQuestion.setOnClickListener(handleClick());
+        deleteQuestion.setOnClickListener(handleClick());
         backToQuestions.setOnClickListener(handleClick());
     }
 
@@ -98,20 +101,34 @@ public class ManageQuestionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.manage_ques_fab){
+                    editingId = -1;
                     scrollView.setVisibility(View.INVISIBLE);
                     addQuesLayout.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.INVISIBLE);
                     txtQuestion.setText("");
                     txtQuestionAnswer.setText("");
+                    saveQuestion.setText(R.string.add_question);
+                    deleteQuestion.setVisibility(View.GONE);
                 } else{
-                    if (v.getId() == R.id.btn_add) {
-                        // add new question to db
-                        String newQuestion = txtQuestion.getText().toString();
-                        String newQuestionAnswer = txtQuestionAnswer.getText().toString();
-                        application.addQuestion(newQuestionAnswer, newQuestion, collectionId);
-                        Snackbar.make(findViewById(R.id.manage_ques_main_layout), R.string.question_added, Snackbar.LENGTH_LONG).show();
+                    if (v.getId() == R.id.btn_save_question) {
+                        if (editingId == -1) {
+                            // add new question to db
+                            String newQuestion = txtQuestion.getText().toString();
+                            String newQuestionAnswer = txtQuestionAnswer.getText().toString();
+                            application.addQuestion(newQuestionAnswer, newQuestion, collectionId);
+                            Snackbar.make(findViewById(R.id.manage_ques_main_layout), R.string.question_added, Snackbar.LENGTH_LONG).show();
+                        } else {
+                            String question = txtQuestion.getText().toString();
+                            String questionAnswer = txtQuestionAnswer.getText().toString();
+                            application.updateQuestion(editingId, questionAnswer, question);
+                            Snackbar.make(findViewById(R.id.manage_ques_main_layout), R.string.question_saved, Snackbar.LENGTH_LONG).show();
+                        }
+                    } else if (v.getId() == R.id.btn_delete_question) {
+                        application.deleteQuestion(editingId);
+                        Snackbar.make(findViewById(R.id.manage_ques_main_layout), R.string.question_deleted, Snackbar.LENGTH_LONG).show();
                     }
 
+                    editingId = -1;
                     LoadQuestions();
                     scrollView.setVisibility(View.VISIBLE);
                     addQuesLayout.setVisibility(View.INVISIBLE);
@@ -132,20 +149,28 @@ public class ManageQuestionsActivity extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText(ques.getAnswer());
             btn.setId(ques.getId());
-            btn.setOnClickListener(handleQuestionClick());
+            btn.setOnClickListener(handleQuestionClick(ques));
             // TODO Add btn to buttonList
             linearLayout.addView(btn, params);
         }
     }
 
-    View.OnClickListener handleQuestionClick(){
+    View.OnClickListener handleQuestionClick(final Question ques){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editQuestionIntent = new Intent(getApplicationContext(), EditQuestionActivity.class);
-                editQuestionIntent.putExtra("darkTheme", darkTheme);
-                editQuestionIntent.putExtra("questionId", v.getId());
-                startActivity(editQuestionIntent);
+//                Intent editQuestionIntent = new Intent(getApplicationContext(), EditQuestionActivity.class);
+//                editQuestionIntent.putExtra("darkTheme", darkTheme);
+//                editQuestionIntent.putExtra("questionId", v.getId());
+//                startActivity(editQuestionIntent);
+                editingId = ques.getId();
+                scrollView.setVisibility(View.INVISIBLE);
+                addQuesLayout.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.INVISIBLE);
+                txtQuestion.setText(ques.getQuestion());
+                txtQuestionAnswer.setText(ques.getAnswer());
+                saveQuestion.setText(R.string.save_question);
+                deleteQuestion.setVisibility(View.VISIBLE);
             }
         };
     }

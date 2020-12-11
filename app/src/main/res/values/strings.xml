@@ -33,7 +33,11 @@
     <string name="question">Question</string>
     <string name="question_answer">Answer</string>
     <string name="add_question">Add Question</string>
+    <string name="save_question">Save</string>
+    <string name="delete_question">Delete</string>
     <string name="question_added">Question added!</string>
+    <string name="question_saved">Question saved!</string>
+    <string name="question_deleted">Question deleted!</string>
 
     <!-- Edit Question -->
     <string name="title_activity_edit_question">Edit Question</string>
