@@ -162,8 +162,6 @@ public class PlayActivity extends AppCompatActivity {
                         view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
                     }
 
-                    Toast.makeText(PlayActivity.this, totalQuestion+":"+questionIndex, Toast.LENGTH_SHORT).show();
-
                     // show btn_next
                     if(totalQuestion != (questionIndex + 1)){
                         managerNextButton();
@@ -310,7 +308,5 @@ public class PlayActivity extends AppCompatActivity {
 
         totalCorrect = 0;
         view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
-
-        Toast.makeText(this, totalQuestion+":"+questionIndex, Toast.LENGTH_SHORT).show();
     }
 }
