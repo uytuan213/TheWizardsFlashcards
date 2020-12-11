@@ -61,7 +61,9 @@ public class AlarmActivity extends AppCompatActivity {
 
         if (darkTheme){
             txtTime.setTextColor(Color.WHITE);
+            txtTime.setHintTextColor(Color.WHITE);
             txtDate.setTextColor(Color.WHITE);
+            txtDate.setHintTextColor(Color.WHITE);
         }
 
         setDefaultDate();

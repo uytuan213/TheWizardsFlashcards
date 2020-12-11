@@ -78,6 +78,8 @@ public class ManageQuestionsActivity extends AppCompatActivity {
         if (darkTheme){
             txtQuestion.setTextColor(Color.WHITE);
             txtQuestionAnswer.setTextColor(Color.WHITE);
+            txtQuestion.setHintTextColor(Color.WHITE);
+            txtQuestionAnswer.setHintTextColor(Color.WHITE);
         }
 
 

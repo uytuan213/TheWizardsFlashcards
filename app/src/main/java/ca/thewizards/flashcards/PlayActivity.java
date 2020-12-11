@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
@@ -102,6 +100,7 @@ public class PlayActivity extends AppCompatActivity {
             if (darkTheme){
                 cardView.setCardBackgroundColor(Color.GRAY);
                 txt_answer.setTextColor(Color.WHITE);
+                txt_answer.setHintTextColor(Color.WHITE);
             }
             displayQuestion(txt_question, questionIndex);
         }
@@ -294,7 +293,12 @@ public class PlayActivity extends AppCompatActivity {
         displayQuestion(txt_question, questionIndex);
 
         faceFlag = 0;
-        image_Face.setImageResource(R.color.colorWhite);
+        if (darkTheme){
+            image_Face.setImageResource(R.color.colorBlack);
+        }
+        else{
+            image_Face.setImageResource(R.color.colorWhite);
+        }
 
         txt_answer.setText("");
 
@@ -305,6 +309,8 @@ public class PlayActivity extends AppCompatActivity {
         btn_next.setVisibility(View.INVISIBLE);
         txt_answer.setEnabled(true);
         btn_ok.setEnabled(true);
+
+
 
         totalCorrect = 0;
         view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
