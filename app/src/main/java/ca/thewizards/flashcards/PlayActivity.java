@@ -3,6 +3,7 @@ package ca.thewizards.flashcards;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ public class PlayActivity extends AppCompatActivity {
     private Button btn_next;
 
     private boolean animation;
+    private boolean darkTheme;
     private int collectionId;
     private int questionIndex = 0;
     private CardView cardView;
@@ -52,7 +54,8 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        if (intent.getBooleanExtra("darkTheme", false)){
+        darkTheme = intent.getBooleanExtra("darkTheme", false);
+        if (darkTheme){
             setTheme(R.style.AppThemeDark);
         } else {
             setTheme(R.style.AppTheme);
@@ -91,6 +94,10 @@ public class PlayActivity extends AppCompatActivity {
 
             btn_ok.setOnClickListener(handleClick());
             btn_next.setOnClickListener(handleClick());
+            if (darkTheme){
+                cardView.setCardBackgroundColor(Color.GRAY);
+                txt_answer.setTextColor(Color.WHITE);
+            }
             displayQuestion(txt_question, questionIndex);
         }
         else{
