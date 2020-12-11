@@ -16,6 +16,11 @@
         <item name="android:windowBackground">@color/colorBlack</item>
         <item name="android:itemBackground">@color/colorBlack</item>
         <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:buttonStyle">@style/ButtonDark</item>
+    </style>
+
+    <style name="ButtonDark" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textColor">@color/colorBlack</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.AppCompat.NoActionBar">
@@ -27,5 +32,4 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
-
 </resources>

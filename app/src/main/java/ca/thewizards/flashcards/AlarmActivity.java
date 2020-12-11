@@ -11,6 +11,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -34,11 +35,13 @@ public class AlarmActivity extends AppCompatActivity {
     Button btnSetAlarm;
 
     String dateTimeAlarmStr;
+    private boolean darkTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        if (intent.getBooleanExtra("darkTheme", false)){
+        darkTheme = intent.getBooleanExtra("darkTheme", false);
+        if (darkTheme){
             setTheme(R.style.AppThemeDark);
         } else {
             setTheme(R.style.AppTheme);
@@ -55,6 +58,11 @@ public class AlarmActivity extends AppCompatActivity {
         txtDate = findViewById(R.id.date_input);
         txtTime = findViewById(R.id.time_input);
         btnSetAlarm = findViewById(R.id.btnSetAlarm);
+
+        if (darkTheme){
+            txtTime.setTextColor(Color.WHITE);
+            txtDate.setTextColor(Color.WHITE);
+        }
 
         setDefaultDate();
 

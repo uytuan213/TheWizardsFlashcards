@@ -1,6 +1,7 @@
 package ca.thewizards.flashcards;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,6 +74,12 @@ public class ManageQuestionsActivity extends AppCompatActivity {
         backToQuestions = findViewById(R.id.btn_back_to_questions);
         txtQuestion = findViewById(R.id.txt_question);
         txtQuestionAnswer = findViewById(R.id.txt_question_answer);
+
+        if (darkTheme){
+            txtQuestion.setTextColor(Color.WHITE);
+            txtQuestionAnswer.setTextColor(Color.WHITE);
+        }
+
 
         //Auto-generate question buttons
         LoadQuestions();

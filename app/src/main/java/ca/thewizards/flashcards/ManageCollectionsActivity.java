@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +61,10 @@ public class ManageCollectionsActivity extends AppCompatActivity {
         addCollectionName = findViewById(R.id.btn_add);
         backToCollection = findViewById(R.id.btn_back_to_collections);
         txtCollectionName = findViewById(R.id.txt_collection_name);
+
+        if (darkTheme){
+            txtCollectionName.setTextColor(Color.WHITE);
+        }
 
         //Auto-generate collection buttons
         LoadCollections();
