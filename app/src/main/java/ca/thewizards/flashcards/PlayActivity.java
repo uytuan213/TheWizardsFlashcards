@@ -45,8 +45,9 @@ public class PlayActivity extends AppCompatActivity {
     private int totalCorrect;
 
     private SharedPreferences sharedPref;
-    private int faceFlag;   // 0: happy; 1: sad; -1: none
+    private int faceFlag;   // 1: happy; 2: sad; 0: none
     private boolean nextBtnFlag;
+    private boolean isPlayDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class PlayActivity extends AppCompatActivity {
         }
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        isPlayDone = false;
 
         application = (FlashcardsApplication)getApplication();
         questions = application.getQuestions(collectionId);
@@ -129,37 +131,35 @@ public class PlayActivity extends AppCompatActivity {
                                 questions.get(questionIndex).getAnswer());
                     }
 
-                    // happy face and sad face
-                    String answerInput = txt_answer.getText().toString().toLowerCase();
-                    String answerCorrect = questions.get(questionIndex).getAnswer().toLowerCase();
+                    if(!isPlayDone){
+                        // happy face and sad face
+                        String answerInput = txt_answer.getText().toString().toLowerCase();
+                        String answerCorrect = questions.get(questionIndex).getAnswer().toLowerCase();
 
-                    if(answerCorrect.equals(answerInput)){
-                        image_Face.setImageResource(R.drawable.ic_happy_face);
-                        faceFlag = 0;
-                        totalCorrect++;
+                        if(answerCorrect.equals(answerInput)){
+                            image_Face.setImageResource(R.drawable.ic_happy_face);
+                            faceFlag = 1;
+                            totalCorrect++;
+                        }
+                        else{
+                            image_Face.setImageResource(R.drawable.ic_sad_face);
+                            faceFlag = 2;
+                        }
+
+                        // display the score
+                        view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
                     }
-                    else{
-                        image_Face.setImageResource(R.drawable.ic_sad_face);
-                        faceFlag = 1;
-                    }
-
-                    // display the score
-                    view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
-
 
                     // show btn_next
-                    if(totalQuestion > (questionIndex + 1)){
+                    if(totalQuestion != (questionIndex + 1)){
                         managerNextButton();
-                        //btn_next.setVisibility(View.VISIBLE);
-                        //txt_answer.setEnabled(false);
-                        //btn_ok.setEnabled(false);
                         nextBtnFlag = true;
                     }
                     else{
+                        isPlayDone = true;
                         btn_ok.setText(R.string.play_back_to_home);
                         btn_ok.setOnClickListener(handleClickWhenDone());
                     }
-
                     break;
                 case R.id.btn_next:
                     nextBtnFlag = false;
@@ -206,6 +206,8 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         Editor editor = sharedPref.edit();
+        editor.putInt("collectionIdMemory", collectionId);
+
         editor.putInt("questionIndex", questionIndex);
         editor.putBoolean("nextButton", nextBtnFlag);
 
@@ -215,39 +217,43 @@ public class PlayActivity extends AppCompatActivity {
         editor.putString("userAnswer", txt_answer.getText().toString());
         editor.putInt("score", totalCorrect);
 
+        editor.putBoolean("isPlayDone", isPlayDone);
+        editor.putString("okBtnText", btn_ok.getText().toString());
+
         editor.commit();
 
-        Toast.makeText(this, "onPause called", Toast.LENGTH_SHORT).show();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        int collectionIdMemory = sharedPref.getInt("collectionIdMemory", 0);
 
-        questionIndex = sharedPref.getInt("questionIndex", 0);
+        if(collectionId == collectionIdMemory){
+            questionIndex = sharedPref.getInt("questionIndex", 0);
 
-        nextBtnFlag = sharedPref.getBoolean("nextButton", false);
-        if(nextBtnFlag){
-            managerNextButton();
-        }
+            nextBtnFlag = sharedPref.getBoolean("nextButton", false);
+            if(nextBtnFlag){
+                managerNextButton();
+            }
 
-        //displayQuestion(txt_question, questionIndex);
-        txt_question.setText(sharedPref.getString("questionText",
-                "Q" + (questionIndex + 1) + ": " + questions.get(questionIndex).getQuestion()));
+            //displayQuestion(txt_question, questionIndex);
+            txt_question.setText(sharedPref.getString("questionText",
+                    "Q" + (questionIndex + 1) + ": " + questions.get(questionIndex).getQuestion()));
 
-        faceFlag = sharedPref.getInt("faceFlag", -1);
-        //if(faceFlag != -1){
+            faceFlag = sharedPref.getInt("faceFlag", -1);
             reassignFace(faceFlag);
-        //}
 
-        txt_answer.setText(sharedPref.getString("userAnswer", ""));
 
-        totalCorrect = sharedPref.getInt("score", 0);
-        view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
+            txt_answer.setText(sharedPref.getString("userAnswer", ""));
 
-        Toast.makeText(this, "onResume called, questionIndex: " + questionIndex, Toast.LENGTH_SHORT).show();
+            totalCorrect = sharedPref.getInt("score", 0);
+            view_Result.setText("Score: " + totalCorrect + "/" + totalQuestion);
 
+            isPlayDone = sharedPref.getBoolean("isPlayDone", false);
+            btn_ok.setText(sharedPref.getString("okBtnText", getString(R.string.play_OK)));
+        }
     }
 
     private void displayQuestion(TextView txt, int qIndex){
@@ -260,10 +266,10 @@ public class PlayActivity extends AppCompatActivity {
     {
         switch (flag)
         {
-            case 0:
+            case 1:
                 image_Face.setImageResource(R.drawable.ic_happy_face);
                 break;
-            case 1:
+            case 2:
                 image_Face.setImageResource(R.drawable.ic_sad_face);
                 break;
         }
