@@ -48,6 +48,7 @@
     <string name="play_next">Next</string>
     <string name="play_result">Result:</string>
     <string name="play_back_to_home">Back to home</string>
+    <string name="play_no_question">No question in this collection!</string>
 
     <!-- Preference Titles -->
     <string name="appearance_header">Appearance</string>

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,11 +76,16 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent playIntent = new Intent(getApplicationContext(), PlayActivity.class);
-                playIntent.putExtra("darkTheme", darkTheme);
-                playIntent.putExtra("animation", animation);
-                playIntent.putExtra("collectionId", v.getId());
-                startActivity(playIntent);
+                try{
+                    Intent playIntent = new Intent(getApplicationContext(), PlayActivity.class);
+                    playIntent.putExtra("darkTheme", darkTheme);
+                    playIntent.putExtra("animation", animation);
+                    playIntent.putExtra("collectionId", v.getId());
+                    startActivity(playIntent);
+                }
+                catch(Exception e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         };
     }

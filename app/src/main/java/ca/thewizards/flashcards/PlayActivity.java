@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
@@ -72,20 +73,12 @@ public class PlayActivity extends AppCompatActivity {
         application = (FlashcardsApplication)getApplication();
         questions = application.getQuestions(collectionId);
 
-        // Test; TODO: remove later
-//        Question q1 = new Question(1, "Red", "What color is apple?", 1);
-//        Question q2 = new Question(2, "Yellow", "What color is banana?", 1);
-//        Question q3 = new Question(3, "Blue", "What color is sky?", 1);
-//        questions.add(q1);
-//        questions.add(q2);
-//        questions.add(q3);
-
         totalQuestion = questions.size();
         totalCorrect = 0;
 
         if (totalQuestion > 0){
             txt_answer = findViewById(R.id.txt_answer);
-            txt_question = findViewById(R.id.txt_question);
+            txt_question = findViewById(R.id.txt_question_answer);
 
             image_Face = findViewById(R.id.image_Face);
             btn_ok = findViewById(R.id.btn_ok);
@@ -97,6 +90,10 @@ public class PlayActivity extends AppCompatActivity {
             btn_ok.setOnClickListener(handleClick());
             btn_next.setOnClickListener(handleClick());
             displayQuestion(txt_question, questionIndex);
+        }
+        else{
+            onBackPressed();
+            Toast.makeText(getApplicationContext(), R.string.play_no_question, Toast.LENGTH_LONG).show();
         }
     }
 
