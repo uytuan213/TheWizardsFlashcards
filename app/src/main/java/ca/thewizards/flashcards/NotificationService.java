@@ -35,40 +35,46 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int alarm_delay = intent.getIntExtra("DateTimeAlarm", 86400000);
-        //Toast.makeText(this, "onStartCommand called. " + alarm_delay, Toast.LENGTH_SHORT).show();
+        try{
+            int alarm_delay = intent.getIntExtra("DateTimeAlarm", 86400000);
+            //Toast.makeText(this, "onStartCommand called. " + alarm_delay, Toast.LENGTH_SHORT).show();
 
-        final Timer timer = new Timer(true);
+            final Timer timer = new Timer(true);
 
-        final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        final Intent intentNotification = new Intent(getApplicationContext(), MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // emulate the back button
+            final Intent intentNotification = new Intent(getApplicationContext(), MainActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // emulate the back button
 
-        final PendingIntent pendingIntent = PendingIntent
-                .getActivity(getApplicationContext(), INTENT_REQUEST_CODE, intentNotification,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+            final PendingIntent pendingIntent = PendingIntent
+                    .getActivity(getApplicationContext(), INTENT_REQUEST_CODE, intentNotification,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
 
-        final Notification notification = new Notification.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(getString(R.string.alarm_content))
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .build();
+            final Notification notification = new Notification.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(getString(R.string.alarm_content))
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .build();
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                manager.notify(NOTIFICATION_ID, notification);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    manager.notify(NOTIFICATION_ID, notification);
 
-                timer.cancel();
+                    timer.cancel();
 
-                stopSelf(); // to destroy the Service
-            }
-        }, alarm_delay);
+                    stopSelf(); // to destroy the Service
+                }
+            }, alarm_delay);
+            return Service.START_STICKY_COMPATIBILITY;
 
-        return alarm_delay;
+        }
+        catch(Exception ex){
+            return Service.START_STICKY_COMPATIBILITY;
+        }
+
         //return super.onStartCommand(intent, flags, startId);
     }
 
